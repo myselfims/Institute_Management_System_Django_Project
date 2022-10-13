@@ -1,0 +1,1 @@
+web: waitress-serve --port=$PORT anjuman_e_engineers.wsgi:application
