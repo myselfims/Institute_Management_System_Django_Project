@@ -1,0 +1,107 @@
+{% extends 'students.html' %}
+
+{% block title %}Students Progress{% endblock title %}
+
+{% block studentsidebar %}
+
+<style>
+    .studentbtndiv{
+      background-color: transparent;
+    }
+    #studentsbtnactive{
+      padding: 2.2vh ;
+      color: white;
+      font-size: 1vw;
+    }
+    .label{
+      border: 2px solid black;
+      border-radius : 1vw;
+      padding: 0.8vw;
+    }
+
+    .studentdiv{
+      font-size: 1.3vw;
+
+      height: 22vh;
+      flex-direction: column;
+      
+    }
+    #sidebarbtn{
+      width: 12vw;
+    }
+    .subdiv{
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    .smallbtn{
+      width: 8vw;
+      margin: 1vw;
+    }
+    .inputbox{
+      margin: 1vw;
+    }
+</style>
+<div class="studentbtndiv">
+    <a href="/students/" ><button class="sidebarbtn">Students</button></a>
+    {% for permissions in staffpermissions %}
+    {% if permissions.permission == 'computerattendance' or permissions.permission == 'maktabattendance' or permissions.permission == 'englishattendance' or permissions.permission == 'Superuser' %}
+    <a href="/students_attendance/" onclick="PlayClick(clicksound)" ><button class="sidebarbtn">Students Attendance</button></a>{% endif %} {% endfor %}
+    <a href="/studentsprogress/" ><button id="studentsbtnactive" class="sidebarbtn">Students Progress</button></a>
+    <a href="/students/" ><button class="sidebarbtn">Students Time & Class Management</button></a>
+</div>
+
+{% endblock studentsidebar %}
+
+
+
+{% block content %}
+
+<div class="sortingheader">
+    <label for="">Sort By - </label>
+    <select name="" id="">
+      <option value="">A-Z</option>
+      <option value="">Z-A</option>
+    </select>
+    <form class="d-flex" role="search">
+      <input class="inputbox" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="smallbtn">Search</button>
+    </form>
+    <button type="button" class="smallbtn">Add Student</button>
+  </div>
+  <div class="space">l</div>
+
+  {% for message in messages%}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Hurray !</strong> {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+
+
+  {% for student in students%}
+{% if student.id not in removedadmissions %}
+
+  <div class="studentdiv">
+    <div class="subdiv">
+      <label class='label' for=""><strong>{{student.id}}</strong></label>
+      <img class="studentimage" src="https://bit.ly/3Ug0TVr" alt="">
+      <label class='label' for=""> <strong> {{student.full_name}} </strong></label>
+      
+      <label class="label" for="">Current Course : {{student.current_course}} </label>
+      <label class="label" for="">Start Date : {{student.start_date}} </label>
+    </div>
+
+    <div>
+      <form action="/progress_save/{{student.id}}" method="post"> {% csrf_token %}
+      <label  for="">Marks Obtained : </label>
+    <input name="marks" type="number" class='inputbox' placeholder='Enter Mark' required>
+    <button id="sidebarbtn" type='submit' class='sidebarbtn'>Complete</button>
+  </form>
+  </div>
+  </div>
+  
+  {% endif %}
+  {% endfor %}
+
+{% endblock content %}

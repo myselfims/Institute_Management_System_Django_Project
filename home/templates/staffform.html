@@ -1,0 +1,187 @@
+{% extends 'staff.html' %}
+
+{% block title %}Staff Form{% endblock title %}
+
+{% block content %}
+
+<style>
+    .form{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        padding: 2vw;
+        background-image: linear-gradient(to right, rgb(85, 212, 255),rgb(70, 255, 160));
+        margin: 2vw;
+        border-radius: 1vw;
+        flex-direction: column;
+        box-shadow: 1px 3px 6px black
+    }
+    .form-row-1{
+        display: inline-flex;
+        justify-content: center;
+        padding: 2vw;
+        align-items: center;
+
+    }
+    .form-row-2{
+        display: flex;
+        justify-content: center;
+        padding: 2vw;
+        align-items: center;
+
+    }
+    .form-label{
+        margin: 1vw;
+    }
+    
+    .form-row-3{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin: 2vw;
+
+    }
+    .form-row-3{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin: 2vw;
+
+    }
+   .crntsubject{
+    background-color: red;
+   }
+   #eye{
+    background-color: transparent;
+    padding: 0.5vw;
+    border: none;
+    font-size: 2vw;
+   }
+   #confirmbtn{
+    width: 5vw;
+   }
+   #closebtn{
+    width: 5vw;
+   }
+   #closebtncut{
+    width: 3vw;
+   }
+</style>
+
+<div class="form">
+    <form action="/savestaff/{{member.username}}" method="post"> {% csrf_token %}
+        {% for message in messages%}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+   
+    <div class="form-row-1">
+
+        <label class="form-label" for="" >Username</label>
+        <input name='username' value='{{member.username}}' class="inputbox" placeholder="username" type="text" required>
+
+        <label class="form-label" for="">Password</label>
+        <input id="passinput" name='password' value='{{member.password}}' class="inputbox" placeholder="password" type="password" required>
+        <button id="eye" type='button'><s>&#128065;</s></button>
+
+    </div>
+    <div class="form-row-2">
+    <label class='form-label' for="">Subject</label>
+    <select name="subject" id="subject" required>
+        <option style='color: grey;' id='crntsubject' value="{{member.subject}}" selected ><strong>{{member.subject}}</strong></option>
+        {% for subject in subjects %}
+        <option value="{{subject.subject}}">{{subject.subject}}</option>
+        {% endfor %}
+    </select>
+    
+    <label class='form-label' for="">Contact</label>
+    <input value='{{member.mobile}}' name='contact' type="tel" class='inputbox'>
+    </div>
+    <div class="form-row-3">
+        {% for permission in permissions %}
+        <div class="permission-div">
+ 
+            <div class="form-check form-switch">
+                {% for staffpermission in editmemberpermissions %}
+                {% if staffpermission.permission == permission.permission_name %}
+                <input type="hidden" name="permitted{{staffpermission.permission}}" value="delete{{staffpermission.permission}}">
+                {% endif %}
+                 {% endfor %}
+                <input
+                name='permission'
+                {% for staffpermission in editmemberpermissions %}
+                {% if staffpermission.permission == permission.permission_name %}
+                 checked 
+                 name='permitted{{staffpermission.permission}}'
+                 {% endif %}
+                 {% endfor %}
+                  value="{{permission.permission_name}}" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="">{{permission.permission_name}}</label>
+              </div>
+
+
+        </div>
+        {% endfor %}
+        <button type="submit" style="background-image: linear-gradient(to right, rgb(85, 153, 255),rgb(96, 255, 242));" class="sidebarbtn">Save</button>
+        <button type="button" data-target="#exampleModalCenter" style="background-image: linear-gradient(to right, rgb(255, 85, 85),rgb(255, 169, 169));" data-toggle="modal" class="sidebarbtn">Delete</button>
+    </form>
+    </div>
+</div>
+
+</div>
+
+
+<!-- delete confirmation modal -->
+
+<!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Delete confirmation</h5>
+          <button type="button" id="closebtncut" class="sidebarbtn" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="deleteform" action="/deletestaff/{{member.username}}" method="post"> {% csrf_token %}
+            <input name='username' class="inputbox" placeholder="username" type="text" required> <label for="">Please type this {{member.username}}</label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="closebtn" class="sidebarbtn" data-dismiss="modal">Close</button>
+          <button form="deleteform" style="background-image: linear-gradient(to right, rgb(255, 85, 85),rgb(255, 169, 169));" type="submit" id="confirmbtn" class="sidebarbtn" width="1vw">Confirm</button>
+
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+    var eye = document.getElementById('eye');
+    var passbox = document.getElementById('passinput');
+    var togle = 'show'
+    eye.onclick = function(){
+        if(togle == 'show'){
+        passbox.type = 'text';
+        togle = 'hide'
+        eye.innerHTML = '&#128065;';
+    }
+    else if(togle == 'hide'){
+        passbox.type = 'password';
+        togle = 'show'
+        eye.innerHTML = '<s>&#128065;</s>';
+    }
+}
+
+</script>
+
+
+{% endblock content %}

@@ -1,0 +1,139 @@
+{% extends 'staff.html' %}
+
+{% block content %}
+
+<style>
+    .form{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        padding: 2vw;
+        background-color: white;
+        margin: 2vw;
+        border-radius: 1vw;
+        flex-direction: column;
+        
+    }
+    .form-row-1{
+        display: inline-flex;
+        justify-content: center;
+        padding: 2vw;
+        align-items: center;
+
+    }
+    .form-row-2{
+        display: flex;
+        justify-content: center;
+        padding: 2vw;
+        align-items: center;
+
+    }
+    .form-label{
+        margin: 1vw;
+    }
+    .inputbox{
+        height: 5vh;
+        padding: 0.6vw;
+        border-radius: 0.5vw;
+        border: 2px solid black;
+    }
+    .form-row-3{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin: 2vw;
+
+    }
+    .form-row-3{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin: 2vw;
+
+    }
+   .crntsubject{
+    background-color: red;
+   }
+   #eye{
+    background-color: transparent;
+    padding: 0.5vw;
+    font-size: 1vw;
+    border: none;
+   }
+</style>
+
+<div class="form">
+    <form action="/savenewstaff/{{member.username}}" method="post"> {% csrf_token %}
+        {% for message in messages%}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+   
+    <div class="form-row-1">
+
+        <label class="form-label" for="" >Username</label>
+        <input name='username' class="inputbox" placeholder="username" type="text" required>
+
+        <label class="form-label" for="">Password</label>
+        <input id="passinput" name='password' class="inputbox" placeholder="password" type="password" required>
+        <button id="eye" type='button'><s>&#128065;</s></button>
+
+    </div>
+    <div class="form-row-2">
+    <label class='form-label' for="">Subject</label>
+    <select name="subject" id="subject" required>
+        <option id='crntsubject' value="{{member.subject}}"><strong>{{member.subject}}</strong></option>
+        {% for subject in subjects %}
+        <option>{{subject.subject}}</option>
+        {% endfor %}
+    </select>
+    
+    <label class='form-label' for="">Contact</label>
+    <input name='contact' type="tel" class='inputbox'>
+    </div>
+    <div class="form-row-3">
+        {% for permission in permissions %}
+        <div class="permission-div">
+
+ 
+            <div class="form-check form-switch">
+                <input
+                name='permission' value="{{permission.permission_name}}" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="">{{permission.permission_name}}</label>
+              </div>
+
+
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary m-4">Save</button>
+    </div>
+</form>
+</div>
+
+</div>
+
+<script>
+
+    var eye = document.getElementById('eye');
+    var passbox = document.getElementById('passinput');
+    var togle = 'show'
+    eye.onclick = function(){
+        if(togle == 'show'){
+        passbox.type = 'text';
+        togle = 'hide'
+        eye.innerHTML = '&#128065;';
+    }
+    else if(togle == 'hide'){
+        passbox.type = 'password';
+        togle = 'show'
+        eye.innerHTML = '<s>&#128065;</s>';
+    }
+}
+
+</script>
+
+
+{% endblock content %}

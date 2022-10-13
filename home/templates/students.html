@@ -1,0 +1,116 @@
+{% extends 'home.html' %}
+
+{% block title %}Students{% endblock title %}
+
+{% block style %}
+
+<style>
+
+    
+    .studentbtndiv{
+      display: flex;
+      border: 2px solid rgb(0, 0, 0);
+      overflow-y: auto;
+      flex-direction: column;
+      border-radius: 0.5vw;
+
+    }
+    .studentsbtn{
+        background-color: rgb(254, 254, 254);
+        padding: 1.5vh ;
+        width: 20vw;
+        border-radius: 1vw;
+        margin: 1vh 1vw;
+        font-weight: bold;
+    }
+    
+    #studentsbtn{
+        background-color:rgb(4, 185, 185); 
+    }
+
+    #divlink{
+      text-decoration: none;
+      color: black;
+    }
+    .label{
+      border: 2px solid black;
+      padding: 1vw;
+      border-radius: 1vw;
+      margin: 0.5vw;
+    }
+    
+</style>
+
+{% endblock style %}
+{% block style2 %}{% endblock style2 %}
+
+{% block studentsidebar %}
+<style>
+  #studentsactivebtn{
+    padding: 2.2vh ;
+      color: white;
+      font-size: 1vw;
+}
+.smallbtn{
+  width: 8vw;
+  margin: 1vw;
+}
+.inputbox{
+  margin: 1vw;
+}
+</style>
+<div class="studentbtndiv">
+    <a href="/students/" ><button id="studentsactivebtn" class="sidebarbtn">Students</button></a>
+    {% for permissions in staffpermissions %}
+    {% if permissions.permission == 'Computer_Attendance' or permissions.permission == 'Maktab_Attendace' or permissions.permission == 'English_Attendance' or permissions.permission == 'Superuser' %}
+    <a href="/students_attendance/" onclick="PlayClick(clicksound)" ><button class="sidebarbtn">Students Attendance</button></a>{% endif %} {% endfor %}
+    <a href="/studentsprogress/" ><button class="sidebarbtn">Students Progress</button></a>
+    <a href="/batches/" ><button id="batchesbtn" class="sidebarbtn">Students Time & Class Management</button></a>
+    <a href="/attendance_history/" ><button id="batchesbtn" class="sidebarbtn">Attendance History</button></a>
+</div>
+
+{% endblock studentsidebar %}
+
+
+{% block content %}
+<div class="sortingheader">
+    <label for="">Sort By - </label>
+    <select name="" id="">
+      <option value="">A-Z</option>
+      <option value="">Z-A</option>
+    </select>
+    <form action='/search/' method='get' class="d-flex" role="search">
+      <input name='query' class="inputbox" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="smallbtn">Search</button>
+    </form>
+    <a href="/addnewstudent/"><button type="button" class="smallbtn">Add Student</button></a>
+  </div>
+  <div class="space">l</div>
+
+
+  {% for student in students%}
+  {% if student.id not in removedadmissions %}
+  <a href="/editstudent/{{student.id}}" id="divlink"><div class="studentdiv" 
+  {% if student.computer_timing != '' and student.maktab_timing == '' and student.english_timing == '' or  student.computer_timing == '' and student.maktab_timing != '' and student.english_timing == '' or student.computer_timing == '' and student.maktab_timing == '' and student.english_timing != '' %}
+   style='background-color: rgb(253, 253, 156);' {% endif %}
+   
+   {% if student.computer_timing != '' and student.maktab_timing != '' and student.english_timing != '' %} style='background-color: rgb(255, 255, 255);' {% endif %}
+
+   {% if student.computer_timing == '' and student.maktab_timing == '' and student.english_timing == '' %} style='background-color: rgb(255, 126, 126);' {% endif %}
+
+
+   {% if student.computer_timing != '' and student.maktab_timing != '' and student.english_timing == '' or student.computer_timing == '' and student.maktab_timing != '' and student.english_timing != '' or student.computer_timing != '' and student.maktab_timing == '' and student.english_timing != ''%} style='background-color: rgb(156, 243, 253);' {% endif %}>
+
+   
+    <label class="label" for=""><strong>{{student.id}}</strong></label>
+      <img class="studentimage" src="https://bit.ly/3Ug0TVr" alt="">
+      <label class="label" for=""> <strong> {{student.full_name}} </strong></label>
+    
+    <label class="label" for="">Current Course : {{student.current_course}} </label>
+
+
+  </div></a>
+  {% endif %}
+  {% endfor %}
+
+{% endblock content %}

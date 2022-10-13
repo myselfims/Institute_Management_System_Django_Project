@@ -1,0 +1,190 @@
+{% extends 'students.html' %}
+
+{% block title %}Students Attendance{% endblock title %}
+
+{% block style %}
+
+<style>
+
+    
+    .studentbtndiv{
+      display: flex;
+      border: 2px solid rgb(0, 0, 0);
+      overflow-y: auto;
+      flex-direction: column;
+      border-radius: 0.5vw;
+    }
+    .studentsbtn{
+        background-color: rgb(254, 254, 254);
+        padding: 1.5vh ;
+        width: 20vw;
+        border-radius: 1vw;
+        margin: 1vh 1vw;
+        font-weight: bold;
+    }
+    #studentsbtnactive{
+      padding: 2.2vh ;
+      color: white;
+      font-size: 1vw;
+    }
+  
+    .attendancebtnsdiv{
+
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: auto;
+      order: 2;
+    }
+    .attendancebtns{
+      margin: 1vw;
+      background-color: red;
+      padding: 0.5vw;
+      border-radius: 0.7vw;
+      font-size: 1vw;
+    }
+    #presentbtn{
+      background-image: linear-gradient(to right, rgb(147, 248, 133),rgb(70, 255, 160));
+      width: 6vw;
+      font-size: 1vw;
+      text-align: center;
+    }
+    #absentbtn{
+      background-image: linear-gradient(to right, rgb(255, 142, 142),rgb(255, 190, 190));
+      width: 6vw;
+      font-size: 1vw;
+      text-align: center;
+    }
+    #leavebtn{
+      background-image: linear-gradient(to right, rgb(255, 212, 105),rgb(254, 215, 155));
+      width: 6vw;
+      font-size: 1vw;
+      text-align: center;
+    }
+    #presentbtn:hover{
+      background-image: transparent;
+    }
+    #absentbtn:hover{
+      background-color: transparent;
+    }
+    #leavebtn:hover{
+      background-color: transparent;
+    }
+    .attendancebtns:hover{
+      background-color: red;
+    }
+   .studentsdiv{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+   }
+   .smallbtn{
+    width: 8vw;
+    margin: 1vw;
+  }
+  .inputbox{
+    margin: 1vw;
+  }
+</style>
+
+{% endblock style %}
+
+
+
+{% block studentsidebar %}
+
+
+<div class="studentbtndiv">
+    <a href="/students/" onclick="PlayClick(clicksound)" id="studentsbtn"><button class="sidebarbtn">Students</button></a>
+    {% for permissions in staffpermissions %}
+    {% if permissions.permission == 'Computer_Attendance' or permissions.permission == 'Maktab_Attendance' or permissions.permission == 'English_Attendance' or permissions.permission == 'Superuser' %}
+    <a href="/students_attendance/" onclick="PlayClick(clicksound)" ><button id="studentsbtnactive" class="sidebarbtn">Students Attendance</button></a>{% endif %} {% endfor %}
+    <a href="/studentsprogress/" onclick="PlayClick(clicksound)" id="studentsbtn"><button class="sidebarbtn">Students Progress</button></a>
+    <a href="/batches/" onclick="PlayClick(clicksound)" id="studentsbtn"><button class="sidebarbtn">Students Time & Class Management</button></a>
+</div>
+
+{% endblock studentsidebar %}
+
+{% block content %}
+
+<div class="sortingheader">
+    <label for="">Sort By - </label>
+    <select name="" id="">s
+      <option value="">A-Z</option>
+      <option value="">Z-A</option>
+    </select>
+    <form action='/students_attendance/' method='get' class="d-flex" role="search">
+      <input name = 'query' class="inputbox" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="smallbtn">Search</button>
+    </form>
+    <button type="button" class="smallbtn">Add Student</button>
+    
+    <label id="date" for=""> Date : {{date}}</label>
+  </div>
+  <div class="space">i</div>
+  <div class="studentsdiv">
+    {% for student in students %}
+    {% if student.id not in savedcomputerattendance %}
+    {% for batch in batches %}
+    {% if student.computer_timing == batch.start_time or student.maktab_timing == batch.start_time or student.english_timing == batch.start_time %}
+    <form id="{{student.id}}" action="/attendance_save/" method='post'> {% csrf_token %}
+      <div id="studentdiv" class="studentdiv">
+        <label for=""><strong>{{student.id}}</strong></label>
+        <img class="studentimage" src="https://bit.ly/3Ug0TVr" alt="">
+        <label for=""> <strong> {{student.full_name}} </strong></label>
+     
+        <label for="Timing">{{batch.subject}} : {{student.computer_timing}} Teacher :</label>
+        <label for="Timing">Teacher : {{batch.teacher}}</label>
+        
+        <input type="hidden" name='{{forloop.counter}}' value='{{student.id}}'>
+        <input type="hidden" name='student_id' value='{{student.id}}'>
+
+        {% for permission in staffpermissions%}
+        {% if permission.permission == 'Superuser'%}
+        <input type="hidden" name='subject' value='Computer_Attendance'>
+        {% elif permission.permission == 'Computer_Attendance'%}
+        <input type="hidden" name='subject' value='{{permission.permission}}'>
+        {% elif permission.permission == 'Maktab_Attendance' %}
+        <input type="hidden" name='subject' value='{{permission.permission}}'>
+        {% elif permission.permission == 'English_Attendance' %}
+        <input type="hidden" name='subject' value='{{permission.permission}}'>
+        
+        {% endif %}
+        {% endfor %}
+        <input type="hidden" name='date' value='{{date}}'>
+        <div class="attendancebtnsdiv">
+          
+          <button onclick="PlayClick(clicksound)" form="{{student.id}}" class="attendancebtns" type="submit" name='status{{student.id}}' id="presentbtn" class="sidebarbtn" value='present'> Present </button>
+          
+          <button onclick="PlayClick(clicksound)" form="{{student.id}}" class="attendancebtns" type="submit" name='status{{student.id}}' id='absentbtn' class="sidebarbtn" value='absent'> Absent </button>
+          
+          <button onclick="PlayClick(clicksound)" form="{{student.id}}" class="attendancebtns" type="submit" name='status{{student.id}}' id='leavebtn' class="sidebarbtn" value='leave'> Leave </button>
+        </div>
+      </form>
+      {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+      </div>
+ 
+
+      
+  </div>
+ 
+{% endblock content %}
+
+{% block script %}
+
+<script>
+  
+  var presentbtn =  document.getElementById('presentbtn');
+
+  function SubmitForm(savebtn) {
+    document.getElementById(savebtn).click();
+  }
+
+
+</script>
+{% endblock script %}
+

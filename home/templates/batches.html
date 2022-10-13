@@ -1,0 +1,83 @@
+{% extends 'students.html' %}
+
+{% block style2 %}
+<style>
+
+
+    #batchesbtn{
+        color: white;
+    }
+</style>
+{% endblock style2 %}
+
+
+{% block studentsidebar %}
+<style>
+    #batchesbtn{
+      padding: 2.2vh ;
+        color: white;
+        font-size: 1vw;
+  }
+  label{
+    border: 2px solid black;
+    padding: 0.5vw;
+    border-radius: 0.7vw;
+    font-size: 1.1vw;
+  }
+  .smallbtn{
+    width: 8vw;
+    margin: 1vw;
+  }
+  .inputbox{
+    margin: 1vw;
+  }
+  </style>
+<div class="studentbtndiv">
+    <a href="/students/" ><button id="studentsactivebtn" class="sidebarbtn">Students</button></a>
+    {% for permissions in staffpermissions %}
+    {% if permissions.permission == 'Computer_Attendance' or permissions.permission == 'Maktab_Attendace' or permissions.permission == 'English_Attendance' or permissions.permission == 'Superuser' %}
+    <a href="/students_attendance/" onclick="PlayClick(clicksound)" ><button class="sidebarbtn">Students Attendance</button></a>{% endif %} {% endfor %}
+    <a href="/studentsprogress/" ><button class="sidebarbtn">Students Progress</button></a>
+    <a href="/batches/" ><button id="batchesbtn" class="sidebarbtn">Students Time & Class Management</button></a>
+</div>
+
+{% endblock studentsidebar %}
+
+{% block content %}
+
+<div class="sortingheader">
+    <label for="">Sort By - </label>
+    <select name="" id="">
+      <option value="">A-Z</option>
+      <option value="">Z-A</option>
+    </select>
+    <form class="d-flex" role="search">
+      <input class="inputbox" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="smallbtn">Search</button>
+    </form>
+    <a href="/addbatche/"><button type="button" class="smallbtn">Add Batch</button></a>
+  </div>
+  <div class="space">l</div>
+
+{% block contentforbatches %}
+
+  {% for batch in batches %}
+  
+  <div class="studentdiv" {% if batch.total_students > batch.max_capacity %}
+    style='background-color: rgb(255, 126, 126);' {% endif %}>
+    <form action="/editbatche/{{batch.id}}">
+    <label for=""><strong>{{forloop.counter}}</strong></label>
+      <img class="studentimage" src="https://bit.ly/3Ug0TVr" alt="">
+      <label class='stafflabel' for=""> <strong> {{batch.start_time}} To {{batch.end_time}} </strong></label>
+      <label class='stafflabel' for=""> <strong> Subject :  {{batch.subject}} </strong></label>
+      <label class='stafflabel' for=""> <strong> Teacher : {{batch.teacher}} </strong></label>
+      <label class='stafflabel' for=""> <strong> Capacity : {{batch.max_capacity}} </strong></label>
+      <label class='stafflabel' for=""> <strong> Load :  {{batch.total_students}} </strong></label>
+        <button class='smallbtn' type="submit" id='editbtn'>Edit</button>
+    </form>
+  </div>
+  
+  {% endfor %}
+  {% endblock contentforbatches %}
+
+{% endblock content %}

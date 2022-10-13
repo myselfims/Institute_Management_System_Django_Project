@@ -1,0 +1,198 @@
+{% extends 'students.html' %}
+
+
+
+{% block style %}
+
+<style>
+
+    
+    .studentbtndiv{
+        background-color: rgb(255, 255, 0);
+        display: flex;
+        border: 2px solid rgb(250, 0, 0);
+        
+        flex-direction: column;
+    }
+    .studentsbtn{
+        background-color: rgb(254, 254, 254);
+        padding: 1.5vh ;
+        width: 20vw;
+        border-radius: 1vw;
+        margin: 1vh 1vw;
+        font-weight: bold;
+    }
+    #studentsbtnactive{
+        background-color: aqua;
+    }
+    #studentsbtn{
+        background-color:rgb(4, 185, 185); 
+    }
+  
+    .attendancebtnsdiv{
+
+      display: inline-flex;
+      float: right;
+      justify-content: center;
+      align-items: center;
+ 
+  
+    
+    }
+    .attendancebtns{
+      margin: 1vw;
+      background-color: red;
+      padding: 0.5vw;
+      border-radius: 0.7vw;
+      font-size: 1vw;
+    }
+    #presentbtn{
+      background-color: rgb(119, 249, 119);
+    }
+    #absentbtn{
+      background-color: rgb(254, 114, 114);
+    }
+    #leavebtn{
+      background-color: rgb(249, 249, 119);
+    }
+    #presentbtn:hover{
+      background-color: transparent;
+    }
+    #absentbtn:hover{
+      background-color: transparent;
+    }
+    #leavebtn:hover{
+      background-color: transparent;
+    }
+    .attendancebtns:hover{
+      background-color: red;
+    }
+    .studentsdiv{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+    }
+    
+</style>
+
+{% endblock style %}
+
+
+
+{% block studentsidebar %}
+
+<div class="studentbtndiv">
+    <a href="/students/" onclick="PlayClick(clicksound)" id="studentsbtn"><button class="studentsbtn">Students</button></a>
+    {% for permissions in staffpermissions %}
+    {% if permissions.permission == 'computerattendance' or permissions.permission == 'maktabattendance' or permissions.permission == 'englishattendance' %}
+    <a href="/students_attendance/" onclick="PlayClick(clicksound)" id="studentsbtnactive"><button class="studentsbtn">Students Attendance</button></a>{% endif %} {% endfor %}
+    <a href="/students/" onclick="PlayClick(clicksound)" id="studentsbtn"><button class="studentsbtn">Students Progress</button></a>
+    <a href="/students/" onclick="PlayClick(clicksound)" id="studentsbtn"><button class="studentsbtn">Students Timing</button></a>
+</div>
+
+{% endblock studentsidebar %}
+
+{% block content %}
+
+<div class="sortingheader">
+    <label for="">Sort By - </label>
+    <select name="" id="">s
+      <option value="">A-Z</option>
+      <option value="">Z-A</option>
+    </select>
+    <form class="d-flex" role="search">
+      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="btn btn-success">Success</button>
+    </form>
+    <button type="button" class="btn btn-primary">Add Student</button>
+    
+    <label id="date" for=""> Date : {{date}}</label>
+  </div>
+  <div>i</div>
+  <div class="studentsdiv">
+    {% for student in students %}
+    {% if student.id not in savedcomputerattendance %}
+    <form id="{{student.id}}" action="/attendance_save/" method='post'> {% csrf_token %}
+      <div id="studentdiv" class="studentdiv">
+        <label for=""><strong>{{student.id}}</strong></label>
+        <img class="studentimage" src="https://bit.ly/3Ug0TVr" alt="">
+        <label for=""> <strong> {{student.full_name}} </strong></label>
+     
+        <label for="Timing">Computer : {{student.computer_timing}} Teacher :</label>
+        
+        <input type="hidden" name='{{forloop.counter}}' value='{{student.id}}'>
+        <input type="hidden" name='student_id' value='{{student.id}}'>
+        {% for permission in staffpermissions %}
+        {% if permission.permission == 'computerattendance' %}
+        <input type="hidden" name='subject' value='{{permission.permission}}'>
+        {% elif permission.permission == 'maktabattendance' %}
+        <input type="hidden" name='subject' value='{{permission.permission}}'>
+        {% elif permission.permission == 'englishattendance' %}
+        <input type="hidden" name='subject' value='{{permission.permission}}'>
+        {% endif %}
+        {% endfor %}
+        <input type="hidden" name='date' value='{{date}}'>
+        <div class="attendancebtnsdiv">
+          
+          <button onclick="PlayClick(clicksound)" form="{{student.id}}" class="attendancebtns" type="submit" name='status{{student.id}}' id="presentbtn" value='present'> Present </button>
+          
+          <button onclick="PlayClick(clicksound)" form="{{student.id}}" class="attendancebtns" type="submit" name='status{{student.id}}' id='absentbtn' value='absent'> Absent </button>
+          
+          <button onclick="PlayClick(clicksound)" form="{{student.id}}" class="attendancebtns" type="submit" name='status{{student.id}}' id='leavebtn' value='leave'> Leave </button>
+        </div>
+      </div>
+ 
+    </form>
+      {% endif %}
+      {% endfor %}
+
+      <!-- modal for leave -->
+
+      <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Leave message!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/attendance_save/" method="post"> {% csrf_token %}
+        <textarea id="leavemsg" name="leavemsg" rows="4" cols="50">
+          
+          </textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+  </div>
+ 
+{% endblock content %}
+
+{% block script %}
+
+<script>
+  
+  var presentbtn =  document.getElementById('presentbtn');
+
+  function SubmitForm(savebtn) {
+    document.getElementById(savebtn).click();
+  }
+
+
+</script>
+{% endblock script %}
+

@@ -1,0 +1,87 @@
+{% extends 'addbatch.html' %}
+
+{% block contentforbatches %}
+
+<style>
+    .row-1{
+        background-color: red;
+    }
+    
+    .container{
+        display: flex;
+        justify-content: center;
+        width: 95%;
+        align-items: center;
+        align-content: center;
+        padding: 2vw;
+        background-image: linear-gradient(to right, rgb(85, 212, 255),rgb(70, 255, 160));
+        margin: 2vw;
+        border-radius: 1vw;
+        flex-direction: column;
+        box-shadow: 1px 3px 6px black
+    }
+    .row-1{
+        display: inline-flex;
+        justify-content: center;
+        padding: 2vw;
+        align-items: center;
+
+    } 
+    .subdiv{
+        display: flex;
+        justify-content: space-between;
+        border: 2px solid black;
+        padding: 1vw;
+        margin: 2.5vw 1vw;
+        border-radius: 0.5vw;
+        width: 80%;
+    }
+
+</style>
+
+<form action="/savebatche/" method='post'> {% csrf_token %}
+<div class="container">
+    <h1>Edit Batch</h1>
+    {% for message in messages%}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Hurray!</strong> {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+    <div class="subdiv">
+        <label for="">Subject</label>
+        <select name="subject" id="subject" required>
+            <option value='{{batch.subject}}' selected > {{batch.subject}} </option>
+            {% for subject in subjects %}
+            <option value="{{subject.subject}}">{{subject.subject}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="">Teacher</label>
+        <select name="teacher" id="teacher" required>
+            <option value='{{batch.teacher}}' selected> {{batch.teacher}} </option>
+            {% for teacher in teachers %}
+            <option value="{{teacher.username}}">{{teacher.username}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="subdiv">
+        <label for="" >Start Time</label>
+        <input type="time" value='{{batch.start_time}}' required name='start_time'>
+        <label for="">End Time</label>
+        <input type="time" value='{{batch.end_time}}' required name='end_time'>
+    </div>
+    
+    <div class="subdiv">
+        <label for="">Max Capacity</label>
+        <input name='max_capacity' class='inputbox' value='{{batch.max_capacity}}' type="number" required>
+        <label for="">Min Capacity</label>
+        <input name='min_capacity' class='inputbox' value='{{batch.min_capacity}}' type="number" required >
+    </div>
+    <button class='sidebarbtn' type='submit'>Save</button>
+    
+</div>
+</form>
+
+{% endblock contentforbatches %}

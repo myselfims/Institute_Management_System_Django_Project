@@ -1,0 +1,220 @@
+{% extends 'home.html' %}
+
+{% block title %}Admission Form{% endblock title %}
+
+{% block main %}
+
+<style>
+
+    .form{
+        background-image: linear-gradient(to right, rgb(173, 235, 255),rgb(181, 255, 217));
+        width: 50%;
+        height: fit-content;
+        border-radius: 1vw;
+        box-shadow: 0px 3px 5px black;
+        margin: 1vw;
+        display: flex;
+        padding: 2vw;
+        flex-direction: column;
+ 
+        align-content: center;
+    }
+    .main{
+        justify-content: center;
+        overflow-y: auto;
+    }
+    html, body 
+    { 
+     height: 100%;
+     overflow: auto;
+    }
+    #title{
+        border: 2px solid black;
+        display: inline;
+        height: 3.5vw;
+        width: 100%;
+        text-align: center;
+        border-radius: 1vw;
+        padding: 0.5vw;
+        margin-bottom: 2vw;
+    }
+    #fileinput{
+        width: 10vw;
+        height: 3.5vw;
+    }
+    .subdiv{
+        display: flex;
+        justify-content: space-between;
+        border: 2px solid black;
+        padding: 1vw;
+        margin: 2.5vw 1vw;
+        border-radius: 0.5vw;
+    }
+    .modal-footer{
+        display: flex;
+        flex-direction: row;
+    }
+    @media screen and (max-width:600px){
+        .form{
+            width: 90vw;
+            font-size: 20px;
+        }
+        .subdiv{
+            flex-direction: column;
+        }
+        #title{
+            border: 2px solid black;
+            display: inline;
+            height: 5vh;
+            width: auto;
+            text-align: center;
+            border-radius: 1vw;
+            padding: 0.5vw;
+            margin-bottom: 2vw;
+            font-size: 23px;
+            font-weight: bold;
+        }
+        #fileinput{
+            width: auto;
+            height: auto;
+        }
+</style>
+
+<div class="form">
+    {% for message in messages%}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Hurray !</strong> {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+    <h1 id="title">Edit Student Details</h1>
+    <form action="/studentupdatesave/{{student.id}}" method="post"> {% csrf_token %}
+
+    <div class="subdiv">
+    <label for="">Full Name</label>
+    <input name="name" type="text" class="inputbox" value={{student.full_name}}>
+    <label for="">Mobile</label>
+<input name="mobile" type="text" class="inputbox" value={{student.mobile}}>
+ 
+</div>
+
+<div class="subdiv">
+    <label for="">Picture</label>
+    <input name="picture" id="fileinput" type="file">
+<label for="">Gender</label>
+<select name="gender" id="gender">
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+</select>
+
+</div>
+<div class="subdiv">
+    <label for="">Class</label>
+    <select name="standard" id="class" required>
+        <option selected >{{student.standard}}</option>
+        
+        {% for standard in standards %}
+        <option value="{{standard.standard}}">{{standard.standard}}</option>
+        {% endfor %}
+    </select>
+    
+    <label for="">School or College</label>
+    <select name="school" id="school">
+        <option value selected >{{student.school}}</option>
+        {% for school in schools %}
+        <option value="{{school.school_name}}">{{school.school_name}}</option>
+        {% endfor %}
+    </select>
+    
+</div>
+
+
+<div class="subdiv">
+    <label for="">Address</label>
+    <select name="address" id="address" >
+        <option value selected>{{student.address}}</option>
+        {% for address in addresses %}
+        <option value="{{address.address}}">{{address.address}}</option>
+        {% endfor %}
+    </select>
+    <label for="">Date Of Birth</label>
+    <input name="dob" type="date" value={{student.dob}}>
+</div>
+
+<div class="subdiv">
+    <label for="">Computer Timing</label>
+    <select name="computer_timing" id="">
+    <option value selected disabled>{{student.computer_timing}}</option>
+    {% for batche in batches %}
+    {% if batche.subject == 'Computer' %}
+    <option {% if batche.total_students > batche.max_capacity %} style='background-color: rgb(255, 126, 126);'{% endif %} value="{{batche.start_time}}">{{batche.start_time}} To {{batche.end_time}}</option>
+    {% endif %}
+    {% endfor %}
+    <option value="">Not applicable</option>
+</select>
+<label for="">English Timing</label>
+<select name="english_timing" id="">
+    <option value selected disabled>{{student.english_timing}}</option>
+    {% for batche in batches %}
+    {% if batche.subject == 'English' %}
+    <option {% if batche.total_students > batche.max_capacity %} style='background-color: rgb(255, 126, 126);'{% endif %} value="{{batche.start_time}}">{{batche.start_time}} To {{batche.end_time}}</option>
+    {% endif %}
+    {% endfor %}
+    <option value="">Not applicable</option>
+</select>
+
+
+</div>
+
+<div class="subdiv">
+    <label for="">Maktab Timing</label>
+    <select name="maktab_timing" id="">
+        <option value selected disabled>{{student.maktab_timing}}</option>
+        {% for batche in batches %}
+        {% if batche.subject == 'Arabic' %}
+        <option {% if batche.total_students > batche.max_capacity %} style='background-color: rgb(255, 126, 126);'{% endif %} value="{{batch.start_time}}">{{batche.start_time}} To {{batche.end_time}}</option>
+        {% endif %}
+        {% endfor %}
+    <option value="">Not applicable</option>
+    </select>
+
+</div>
+
+<button type="submit" class='sidebarbtn'>Save</button>
+<button type="button" data-target="#exampleModalCenter" style="background-image: linear-gradient(to right, rgb(255, 85, 85),rgb(255, 169, 169));" data-toggle="modal" class="sidebarbtn">Remove Admission</button>
+
+</form>
+</div>
+
+
+
+<!-- delete confirmation modal -->
+
+<!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Delete confirmation</h5>
+          <button type="button" id="closebtncut" class="smallbtn" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="deleteform" action="/remove_admission/{{student.id}}" method="post"> {% csrf_token %}
+                <label for="">Reason</label>
+                <div><textarea name='reason' row='10' column='10' class="" placeholder="username" type="text" required></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="closebtn" class="sidebarbtn" data-dismiss="modal">Close</button>
+          <button form="deleteform" style="background-image: linear-gradient(to right, rgb(255, 85, 85),rgb(255, 169, 169));" type="submit" id="confirmbtn" class="sidebarbtn" width="1vw">Confirm</button>
+
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+{% endblock main %}

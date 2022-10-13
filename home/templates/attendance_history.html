@@ -1,0 +1,132 @@
+{% extends 'students.html' %}
+
+{% block content %}
+
+<style>
+  .attendancechecker{
+    width: fit-content;
+    height: fit-content;
+    background-color: white;
+    margin: 0.7vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 1vw;
+    padding: 0.5vw;
+    font-size: 1vw;
+    box-shadow: 0px 3px 9px black;
+    position: relative;
+  }
+  .attendancechecker:hover .tooltiptext {
+    display: flex;
+  }
+  .attendancechecker .tooltiptext {
+    display: none;
+    width: auto;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    top: 10vh;
+    position: absolute;
+    z-index: 1;
+    }
+    .studentdiv{
+      height: 30vh;
+      
+    }
+    .history{
+      display: none;
+      flex-direction: row;
+    
+      justify-content: center;
+      height: fit-content;
+      width: 100%;
+      flex-shrink: 0;
+      flex-flow: row wrap;
+  
+    }
+    .smallbtn{
+      display: none;
+    }
+</style>
+
+
+<div class="sortingheader">
+    <label for="">Sort By - </label>
+    <select name="" id="">
+      <option value="">A-Z</option>
+      <option value="">Z-A</option>
+    </select>
+    <form action='/attendance_history/' method='get' class="d-flex" role="search">
+      <input name='query' class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="btn btn-success">Success</button>
+    </form>
+    <a href="/addnewstudent/"><button type="button" class="btn btn-primary">Add Student</button></a>
+  </div>
+  <div class="space">l</div>
+
+
+
+{% for student in students %}
+
+
+
+<div id="studentdiv{{student.id}}" class="studentdiv" >
+    <label for=""><strong>{{student.id}}</strong></label>
+      <img class="studentimage" src="https://bit.ly/3Ug0TVr" alt="">
+      <label for=""> <strong> {{student.full_name}} </strong></label>
+      <label for=""> <strong> {{attend.date}} </strong></label>
+      <button class='sidebarbtn' id="btn{{student.id}}" onclick="Detailed({{student.id}})">Detailed view</button>
+      <div id='history{{student.id}}' class="history">
+      {% for attend in allattendance %}
+      {% if student.id == attend.student_id %}
+        
+      <div class="attendancechecker" {% if attend.status == 'absent' %}
+      style='background-image: linear-gradient(to right, rgb(255, 142, 142),rgb(255, 190, 190));'
+      
+      {% elif attend.status == 'present'%}
+      style='background-image: linear-gradient(to right, rgb(147, 248, 133),rgb(70, 255, 160));'
+      {% elif attend.status == 'leave'%}
+      style='background-image: linear-gradient(to right, rgb(255, 212, 105),rgb(254, 215, 155));'
+      {% endif %}>
+        <label for="">{{attend.date}}</label>
+        <label for="">{{attend.subject}}</label>
+        <label for="">{{attend.status}}</label>
+        {% if attend.status == 'leave' %}
+        <span class="tooltiptext">{{attend.leavemsg}}</span>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <button id="closebtn{{student.id}}" onclick="Minimize({{student.id}})" class="smallbtn">Close</button>
+  </div>
+ 
+  {% endfor %}
+
+
+  <script>
+
+    function Detailed(id){
+      document.getElementById('btn'+id).style.display = 'none';
+      document.getElementById('history'+id).style.display = 'flex';
+      document.getElementById('history'+id).style.flexDirection = 'row';
+      document.getElementById('closebtn'+id).style.display = 'flex';
+      document.getElementById('studentdiv'+id).style.flexDirection = 'column';
+      document.getElementById('studentdiv'+id).style.height = 'fit-content';
+    }
+    function Minimize(id){
+      document.getElementById('btn'+id).style.display = 'flex';
+      document.getElementById('history'+id).style.display = 'none';
+      document.getElementById('history'+id).style.flexDirection = 'row';
+      document.getElementById('closebtn'+id).style.display = 'none';
+      document.getElementById('studentdiv'+id).style.flexDirection = 'row';
+      document.getElementById('studentdiv'+id).style.height = 'fit-content';
+    }
+
+  </script>
+
+
+{% endblock content %}

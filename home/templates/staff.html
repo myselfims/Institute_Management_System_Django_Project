@@ -1,0 +1,91 @@
+{% extends 'home.html' %}
+
+{% block title %}Staff{% endblock title %}
+
+{% block editstaffbtn %}
+
+<style>
+    #staff{
+        color: white;
+        padding: 2.2vh;
+    }
+
+#activebtnn{
+  padding: 2.2vh ;
+  color: white;
+  font-size: 1vw;
+}
+#activebtn{
+  padding: 2.2vh ;
+  color: black;
+  font-size: 1vw;
+}
+
+  .stafflabel{
+      margin: 1vw;
+  }
+</style>
+
+<a onclick="PlayClick(clicksound)" href="/staff/" ><button id="activebtnn" class="sidebarbtn">Staff</button></a>{% endblock editstaffbtn %}
+
+{% block content %}
+<style>
+    .stafflabel{
+      
+        margin: 1vw;
+        padding: 1vh 1vw;
+        border-radius: 1vw;
+        border: 2px solid black;
+    }
+    #editbtn{
+        padding: 1vh 1vw;
+        border-radius: 1vw;
+        width: 5vw;
+        background-color: rgb(113, 248, 113);
+      
+        justify-self: flex-start;
+        
+    }
+    #editbtn:hover{
+        background-color: transparent;
+    }
+    .smallbtn{
+      width: 8vw;
+      margin: 1vw;
+    }
+    .inputbox{
+      margin: 1vw;
+    }
+
+</style>
+<div class="sortingheader">
+    <label for="">Sort By - </label>
+    <select name="" id="">
+      <option value="">A-Z</option>
+      <option value="">Z-A</option>
+    </select>
+    <form class="d-flex" role="search">
+      <input class="inputbox" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="smallbtn">Search</button>
+    </form>
+    <a href="/addstaff/"><button type="button" class="smallbtn">Add Staff</button></a>
+  </div>
+  <div class='space'>l</div>
+
+  {% for member in members %}
+  
+  <div class="studentdiv">
+    <form action="/editstaff/{{member.username}}">
+    <label for=""><strong>{{forloop.counter}}</strong></label>
+      <img class="studentimage" src="https://bit.ly/3Ug0TVr" alt="">
+      <label class='stafflabel' for=""> <strong> {{member.username}} </strong></label>
+      <label class='stafflabel' for=""> <strong> Subject :  {{member.subject}} </strong></label>
+      <label class='stafflabel' for=""> <strong> Contact : {{member.mobile}} </strong></label>
+      <label class='stafflabel' for=""> <strong> Timing :  {{member.timing}} </strong></label>
+        <button class='sidebarbtn' type="submit" id='editbtn'>Edit</button>
+    </form>
+  </div>
+  
+  {% endfor %}
+
+{% endblock content %}
