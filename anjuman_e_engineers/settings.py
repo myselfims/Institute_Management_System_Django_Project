@@ -31,6 +31,11 @@ ALLOWED_HOSTS = ["institutemanagementsystembyims.herokuapp.com"]
 
 # Application definition
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://institutemanagementsystembyims.herokuapp.com'
+]
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
