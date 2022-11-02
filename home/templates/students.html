@@ -90,7 +90,8 @@
 
   {% for student in students%}
   {% if student.id not in removedadmissions %}
-  <a href="/editstudent/{{student.id}}" id="divlink"><div class="studentdiv" 
+  <a href="/editstudent/{{student.id}}" id="divlink">
+  <div class="studentdiv" 
   {% if student.computer_timing != '' and student.maktab_timing == '' and student.english_timing == '' or  student.computer_timing == '' and student.maktab_timing != '' and student.english_timing == '' or student.computer_timing == '' and student.maktab_timing == '' and student.english_timing != '' %}
    style='background-color: rgb(253, 253, 156);' {% endif %}
    
