@@ -109,9 +109,7 @@
           {% for message in messages%}
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Oops!</strong> {{message}}
-            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
           {% endfor %}
           <form action="staffauth/" method="post"> {% csrf_token %}
