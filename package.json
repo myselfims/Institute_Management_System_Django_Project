@@ -1,0 +1,20 @@
+{
+        "name": "Institute_Management_System_Django_Project",
+        "version": "1.0.0",
+        "description": "",
+        "scripts": {
+            "build": "echo \"No build specified\" && exit 1",
+            "test": "echo \"No test specified\" && exit 1",
+            "start": "node index.js"
+        },
+        "repository": {
+            "type": "git",
+            "url": "git+https://github.com/myselfims/Institute_Management_System_Django_Project.git"
+        },
+        "author": "",
+        "license": "ISC",
+        "bugs": {
+            "url": "https://github.com/myselfims/Institute_Management_System_Django_Project/issues"
+        },
+        "homepage": "https://github.com/myselfims/Institute_Management_System_Django_Project#readme"
+    }
